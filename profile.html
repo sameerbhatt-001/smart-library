@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART LIBRARY - STUDENT PROFILE</title>
+</head>
+<body style="margin: 0; font-family: Arial, sans-serif;">
+
+    <!-- Top Navigation Bar -->
+    <div style="background-color: #007bff; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">Smart Library Dashboard</h2>
+        <div style="display: flex; align-items: center; gap: 15px;">
+    <span>Welcome, Student!</span>
+    <a href="logn.html" style="background-color: #dc3545; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: bold;">Logout 🚪</a>
+</div>
+    </div>
+
+    <!-- Main Container -->
+    <div style="display: flex; min-height: calc(100vh - 60px);">
+        
+        <!-- Sidebar Menu Options -->
+        <div style="width: 200px; background-color: #1e293b; color: white; padding: 20px;">
+            <p style="cursor:pointer; padding: 10px 0;"><a href="dashboard.html" style="color: white; text-decoration: none;">📌 Dashboard</a></p>
+            <p style="cursor:pointer; padding: 10px 0;"><a href="search.html" style="color: white; text-decoration: none;">📚 Search Books</a></p>
+            <p style="cursor:pointer; padding: 10px 0;"><a href="issued.html" style="color: white; text-decoration: none;">📖 Issued Books</a></p>
+            <p style="cursor:pointer; padding: 10px 0;"><a href="notes.html" style="color: white; text-decoration: none;">📁 Digital Notes</a></p>
+            <p style="cursor:pointer; padding: 10px 0; font-weight: bold; color: #60a5fa;">👤 Profile</p>
+        </div>
+
+        <!-- Main Content Area -->
+        <div style="flex: 1; padding: 20px; background-color: #f4f6f9;">
+            <h3>👤 Student Profile Details</h3>
+            
+            <!-- Profile Card -->
+            <div style="background: white; padding: 25px; border-radius: 8px; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; background-color: #007bff; color: white; font-size: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+                        👤
+                    </div>
+                    <h2 style="margin: 5px 0;">Ronak</h2>
+                    <p style="color: gray; margin: 0;">B.Tech 1st Year</p>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+                <div style="line-height: 2;">
+                    <p><strong>Student ID:</strong> STU202601</p>
+                    <p><strong>Branch / Department:</strong> Computer Science / Engineering</p>
+                    <p><strong>Email:</strong> ronak@example.com</p>
+                    <p><strong>Library Card Status:</strong> <span style="color: green; font-weight: bold;">Active</span></p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
