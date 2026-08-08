@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #1e293b;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar h2 {
+            color: #38bdf8;
+            font-size: 22px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 12px;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 12px 15px;
+            display: block;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        /* Action Bar (Search & Add Book Button) */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            border-color: #38bdf8;
+        }
+
+        .btn-add-book {
+            background: #0284c7;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-book:hover {
+            background: #0369a1;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .card h3 {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        .card.overdue .number {
+            color: #f87171;
+        }
+
+        /* Table Section */
+        .table-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        .table-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+        }
+
+        th {
+            color: #38bdf8;
+        }
+
+        .status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status.approved {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .status.pending {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fde047;
+        }
+
+        .status.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        /* Action Buttons */
+        .action-btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-approve {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #15803d;
+        }
+
+        .btn-reject {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #b91c1c;
+        }
+
+        /* Modal Popup Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 25px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .modal-card h2 {
+            margin-bottom: 15px;
+            color: #38bdf8;
+            font-size: 20px;
+        }
+
+        .modal-card .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .modal-card label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .modal-card input, .modal-card select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #475569;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <div>
+            <h2>Admin Portal 🔑</h2>
+            <ul class="nav-links">
+                <li><a href="#" class="active">📌 Dashboard</a></li>
+                <li><a href="search.html">📚 Manage Books</a></li>
+                <li><a href="issued.html">🔄 Issued Requests</a></li>
+                <li><a href="profile.html">👤 Student Records</a></li>
+            </ul>
+        </div>
+        <a href="admin-login.html" class="logout-btn">Logout</a>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>Library Overview</h1>
+                <p style="color: #94a3b8; font-size: 14px;">Welcome back, <b>Admin</b> 👋</p>
+            </div>
+        </div>
+
+        <!-- Action Bar: Search & Add Book -->
+        <div class="action-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Quick search student, book name...">
+            </div>
+            <button class="btn-add-book" onclick="openModal()">➕ Add New Book</button>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stats-grid">
+            <div class="card">
+                <h3>Total Books</h3>
+                <div class="number">1,250</div>
+            </div>
+            <div class="card">
+                <h3>Issued Books</h3>
+                <div class="number">340</div>
+            </div>
+            <div class="card">
+                <h3>Pending Requests</h3>
+                <div class="number" id="pendingCount">2</div>
+            </div>
+            <div class="card overdue">
+                <h3>Overdue Fines</h3>
+                <div class="number">₹1,400</div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Table -->
+        <div class="table-section">
+            <h2>Recent Issue Requests & Actions</h2>
+            <table id="requestsTable">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Book Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Aman Sharma</td>
+                        <td>Operating Systems</td>
+                        <td>08 Aug 2026</td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td>
+                            <div class="action-btn-group">
+                                <button class="btn-action btn-approve" onclick="updateStatus(this, 'Approved')">Approve</button>
+                                <button class="btn-action btn-reject" onclick="updateStatus(this, 'Rejected')">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sameer Bhatt</td>
+                        <td>Data Structures & Algorithms</td>
+                        <td>08 Aug 2026</td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td>
+                            <div class="action-btn-group">
+                                <button class="btn-action btn-approve" onclick="updateStatus(this, 'Approved')">Approve</button>
+                                <button class="btn-action btn-reject" onclick="updateStatus(this, 'Rejected')">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rishabh Verma</td>
+                        <td>Engineering Chemistry</td>
+                        <td>07 Aug 2026</td>
+                        <td><span class="status approved">Approved</span></td>
+                        <td><span style="color: #94a3b8; font-size: 13px;">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Form: Add New Book -->
+    <div class="modal-overlay" id="addBookModal">
+        <div class="modal-card">
+            <h2>Add New Book to Library</h2>
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label>Book Title</label>
+                    <input type="text" placeholder="Enter book title" required>
+                </div>
+                <div class="form-group">
+                    <label>Author Name</label>
+                    <input type="text" placeholder="Enter author name" required>
+                </div>
+                <div class="form-group">
+                    <label>Category / Subject</label>
+                    <select required>
+                        <option value="">Select Category</option>
+                        <option value="CS">Computer Science</option>
+                        <option value="Mechanical">Mechanical Engineering</option>
+                        <option value="Chemistry">Chemistry & Science</option>
+                        <option value="General">General / Soft Skills</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity Copies</label>
+                    <input type="number" value="1" min="1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-add-book">Save Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal Handlers
+        function openModal() {
+            document.getElementById('addBookModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('addBookModal').style.display = 'none';
+        }
+
+        // Add Book Form Submit
+        document.getElementById('addBookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Book added successfully to database!");
+            closeModal();
+            this.reset();
+        });
+
+        // Approve / Reject Actions
+        function updateStatus(btn, newStatus) {
+            const row = btn.closest('tr');
+            const statusCell = row.cells[3];
+            const actionCell = row.cells[4];
+
+            if(newStatus === 'Approved') {
+                statusCell.innerHTML = '<span class="status approved">Approved</span>';
+            } else {
+                statusCell.innerHTML = '<span class="status rejected">Rejected</span>';
+            }
+
+            actionCell.innerHTML = '<span style="color: #94a3b8; font-size: 13px;">Completed</span>';
+        }
+
+        // Search Filter Logic
+        function filterTable() {
+            const input = document.getElementById("searchInput").value.toUpperCase();
+            const table = document.getElementById("requestsTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdName = tr[i].getElementsByTagName("td")[0];
+                let tdBook = tr[i].getElementsByTagName("td")[1];
+                if (tdName || tdBook) {
+                    let nameText = tdName.textContent || tdName.innerText;
+                    let bookText = tdBook.textContent || tdBook.innerText;
+                    if (nameText.toUpperCase().indexOf(input) > -1 || bookText.toUpperCase().indexOf(input) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
